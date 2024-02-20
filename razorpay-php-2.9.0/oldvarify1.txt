@@ -1,0 +1,51 @@
+
+
+if ($success === true)
+{
+    $razorpay_order_id = $_SESSION['razorpay_order_id'];
+    $razorpay_payment_id = $_POST['razorpay_payment_id'];
+    $email = $_SESSION['c_email'];
+    $price = $_SESSION['price'];
+    $pdfname=$_SESSION['tot_pdf'];
+    $sql = "INSERT INTO `orders` (`order_id`, `razorpay_payment_id`, `status`, `pdfname`,`email`, `price`) VALUES ('$razorpay_order_id', '$razorpay_payment_id', 'success','$pdfname','$email', '$price')";
+    if(mysqli_query($conn, $sql)){
+        echo "payment details inserted to db";
+        $query = "select * from addtocart";
+
+        $result = mysqli_query($conn, $query); 
+        while ($row = mysqli_fetch_assoc($result)) {
+            $BookID = $row['id'];
+            $bookname = $row['name'];
+            $bookimage = $row['image'];
+            $bookquality = $row['quatity'];
+            $bookprice = $row['price'];
+            $pdfname=$row['pdfnamecart'];
+            ?>
+               <a download="<?php echo $pdfname; ?>" href="../Admin/admin_pdf_uploads/<?php echo  $pdfname; ?>">click here to downlod pdf</a>
+ 
+     
+        <?php
+    } ?>
+       
+<?php
+    $html = "<p>Your payment was successful</p>
+             <p>Payment ID: {$_POST['razorpay_payment_id']}</p>";
+
+}
+
+}
+else
+{
+    $html = "<p>Your payment failed</p>
+             <p>{$error}</p>";
+}
+
+echo $html;
+
+
+
+
+
+
+
+
